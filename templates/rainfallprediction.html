@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prediksi Curah Hujan</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="https://code.iconify.design/1/1.0.7/iconify.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"></script>
+  <link rel="stylesheet" href="static/css/style.css">
+  <script src="static/js/script.js"></script>
+</head>
+<body class="flex-container">
+  <header class="animate-fade-in">
+    <h1>Rainfall Prediction</h1>
+  </header>
+  <main>
+    <div class="container">
+      <div class = "left-container">
+          <h2>Kondisi Cuaca Hari Ini</h2>
+          <form method="post" action="{{ url_for('predict') }}">
+            <div class="form-group">
+              <label for="suhu">Suhu:</label>
+              <input type="text" name="suhu" class="form-control" placeholder="°C" required>
+            </div>
+            <div class="form-group">
+              <label for="kelembaban_udara">Kelembaban Udara:</label>
+              <input type="text" name="kelembaban_udara" class="form-control" placeholder="%" required>
+            </div>
+            <div class="form-group">
+              <label for="tekanan_udara">Tekanan Udara:</label>
+              <input type="text" name="tekanan_udara" class="form-control" placeholder="%" required>
+            </div>
+            <div class="form-group">
+              <label for="arah_angin">Arah Angin:</label>
+              <input type="text" name="arah_angin" class="form-control" placeholder="Masukkan arah angin" required>
+            </div>
+            <div class="form-group">
+              <label for="kecepatan_angin">Kecepatan Angin:</label>
+              <input type="text" name="kecepatan_angin" class="form-control" placeholder="Masukkan kecepatan angin" required>
+            </div>
+            <div class="container">
+              <button type="submit" class="btn btn-primary">Prediksi</button>
+            </div>
+          </form>
+      </div>
+        <div class="right-container">
+          <div class="col-md-6 chart-container">
+        <!--   <h2>Grafik Curah Hujan Harian</h2>
+          <div id="chart"></div> -->
+          {% if prediction %}
+          <h3>Prediksi Curah Hujan</h3>
+          <p>Kondisi Cuaca: {{ kondisi_cuaca }}</p>
+          <p>Nilai Prediksi Curah Hujan: {{ prediction }}</p>
+          <div class="icon-container">
+            <span class="iconify" data-icon="meteocons:{{ icon }}" style="color: white; font-size: 48px;"></span>
+          </div>
+          {% else %}
+            <h3>Prediksi Curah Hujan</h3>
+            <p>Prediksi belum tersedia</p>
+          {% endif %}
+        </div>
+    </div>
+  </main>
+  <footer class="animate-fade-in">
+    <h5>&copy; 2024 Rainfall Prediction - Kelompok 11 TA D3 TI 2021</h5>
+  </footer>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Mendapatkan referensi elemen form
+      const form = document.querySelector('form');
+  
+      // Menambahkan event listener untuk submit form
+      form.addEventListener('submit', function(event) {
+        // Mendapatkan semua elemen input dalam form
+        const inputs = form.querySelectorAll('input[type="text"]');
+  
+        // Flag untuk melacak apakah sudah menampilkan alert
+        let showAlert = true;
+  
+        // Memeriksa setiap input
+        inputs.forEach(function(input) {
+          // Mendapatkan nilai dari input
+          const value = input.value;
+  
+          // Memeriksa apakah nilai input bukan angka
+          if (isNaN(parseFloat(value))) {
+            // Jika belum menampilkan alert, menampilkannya dan menonaktifkannya untuk input lain
+            if (showAlert) {
+              showAlert = false;
+              event.preventDefault();
+              alert('Inputan harus berupa angka.');
+            }
+            // Mengosongkan nilai input
+            input.value = '';
+          }
+        });
+      });
+    });
+  </script>
+  
+</body>
+</html>

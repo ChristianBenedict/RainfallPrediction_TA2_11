@@ -1,0 +1,219 @@
+.container {
+  display: flex;
+  justify-content: center; /* Center the container horizontally */
+}
+
+.left-container {
+  width: 300px;
+  background-color: #eeeeee;
+  padding: 20px;
+  border: 2px solid #0310c141;
+  border-radius: 10px;
+  margin-right: 10px;
+  align-self: flex-start; 
+}
+
+.left-container h2 {
+  text-align: center; /* Mengatur teks h2 ke tengah */
+  color:#0268b5d7;
+  margin-top: -10px;
+}
+
+.left-container label {
+  color: #0268b5d7;
+}
+
+.right-container {
+  width: 600px;
+  background-color: #eeeeee;
+  padding: 20px;
+  display: flex;
+  border: 2px solid #0310c141;
+  border-radius: 10px;
+  flex-direction: column;
+  margin-left: 10px;
+  position: relative;
+}
+
+.right-container h2 {
+  text-align: center; /* Mengatur teks h2 ke tengah */
+  color: #0268b5d7;
+  margin-top: -20px;
+}
+
+.right-container h3 {
+  text-align: center; /* Mengatur teks h2 ke tengah */
+  color: #0268b5d7;
+  position: relative;
+  z-index: 1;
+}
+
+.right-container p {
+  text-align: center;
+}
+
+.chart-container {
+  flex: 1;
+}
+
+.icon-container {
+  background-color: #d0d0d0;
+  padding: 5px;
+  text-align: center; /* Pusatkan ikon */
+  border-radius: 10px; /* Tambahkan sedikit lengkungan pada sudut */
+  margin-top: 10px; /* Jarak dari teks prediksi */
+}
+
+
+.iconify {
+  font-size: 48px;
+}
+
+body {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+body.flex-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Set tinggi minimum menjadi 100% dari tinggi viewport */
+}
+
+header {
+  background-color: #0268b5d7;
+  color: #fff;
+  padding: 10px;
+  text-align: center;
+  border: 2px #00000090 solid;
+  border-radius: 8px;
+}
+
+
+main {
+  padding: 20px;
+  flex: 1;
+}
+
+section {
+  background-color: #ddd;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.col-md-6 {
+  flex: 0 0 50%;
+  padding: 10px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-control {
+  width: 95%;
+  padding: 5px;
+  border: 0.1px solid #0268b5d7;
+  border-radius: 5px;
+}
+
+
+.btn-primary {
+  background-color: #0268b5d7;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  color: #fff;
+  padding: 10px;
+  width: 50%;
+  margin-top: 10px;
+  margin: 10px auto;
+  border: 2px #0310c122 solid;
+  border-radius: 10px;
+  transition: background-color 0.3s;
+  justify-content: center; /* Center the container horizontally */
+}
+
+.btn-primary:hover {
+  background-color: #0267b5a5; /* Warna baru ketika cursor di atas tombol */
+}
+
+footer {
+  background-color: #0268b5d7;
+  color: #fff;
+  padding: 10px;
+  text-align: center;
+  border: 2px #00000090 solid;
+  border-radius: 8px;
+}
+
+#chart {
+  margin-top: -30px; /* Sesuaikan nilai sesuai kebutuhan */
+  margin-bottom: -25px;
+  padding-top: 8px;
+  padding-bottom: 5px;
+  
+}
+
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column; 
+  }
+
+  .form-container, .chart-container {
+    flex: 0 0 100%; 
+  }
+} 
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 1s ease-in-out;
+}
+
+
+
+/* Penyesuaian tata letak 
+.container {
+  display: flex;
+  justify-content: center; 
+}
+
+.form-container {
+  flex: 0 0 30%;
+  padding: 10px;
+  margin-right: 20px;
+}
+
+.chart-container {
+  flex: 0 0 70%;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart {
+  width: 100%;
+  height: 400px;
+  margin-bottom: 10px;
+}
+
+#prediction {
+  font-size: 18px;
+  font-weight: bold;
+}
