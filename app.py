@@ -29,27 +29,26 @@ class HasilPrediksi(db.Model):
     curah_hujan = db.Column(db.Float)
 
 # Memuat model dari file joblib
-model = joblib.load('rainfall_prediction_model.pkl')
-w1 = model['w1']
-w2 = model['w2']
-out_w = model['out_w']
-scaler_x = model['scaler_x']
-scaler_y = model['scaler_y']
+mlp_regressor_model = joblib.load('mlp_regressor_model.joblib')
+xgb_model = joblib.load('xgb_bpnnmodel.joblib')
+scaler_X = joblib.load('scaler_X.joblib')
+scaler_y = joblib.load('scaler_y.joblib')
 
-def sigmoid(x):
-    return 1 / (1 + np.exp(-x))
-
-# Fungsi untuk membuat prediksi
 def make_prediction(input_data):
-    input_scaled = scaler_x.transform([input_data])
-    l1 = np.dot(input_scaled, w1)
-    l1_out = sigmoid(l1)
-    l2 = np.dot(l1_out, w2)
-    l2_out = sigmoid(l2)
-    output = np.dot(l2_out, out_w)
-    final_out = sigmoid(output)
-    prediction = scaler_y.inverse_transform(final_out.reshape(1, -1))
-    return prediction.flatten()[0]
+    # Prediksi menggunakan model MLPRegressor
+    input_scaled = scaler_X.transform([input_data])
+    prediction_mlp = mlp_regressor_model.predict(input_scaled)
+    
+    # Gabungkan prediksi MLPRegressor ke dalam input untuk XGBoost
+    input_with_mlp = np.hstack((input_scaled, prediction_mlp.reshape(-1, 1)))
+    
+    # Prediksi menggunakan model XGBoost
+    prediction_xgb = xgb_model.predict(input_with_mlp)
+    
+    # Denormalisasi hasil prediksi XGBoost
+    prediction_denormalized = scaler_y.inverse_transform(prediction_xgb.reshape(-1, 1))
+    
+    return prediction_denormalized.flatten()[0]
 
 @app.route('/get_prediction_data')
 def get_prediction_data():
@@ -84,7 +83,6 @@ def get_data():
 def index():
     return render_template('rainfallprediction.html')
 
-# Route untuk prediksi
 @app.route('/predict', methods=['POST'])
 def predict():
     if request.method == 'POST':
@@ -95,14 +93,16 @@ def predict():
         arah_angin = float(request.form['arah_angin'])
         kecepatan_angin = float(request.form['kecepatan_angin'])
 
-        # Susun input data untuk model
+        # Susun input data untuk model (5 fitur yang digunakan untuk prediksi)
         input_data = [suhu, kelembaban_udara, tekanan_udara, arah_angin, kecepatan_angin]
+
+        # DEBUG: Cek panjang input_data
+        print(f"Panjang input_data: {len(input_data)}")
 
         # Lakukan prediksi menggunakan model yang sudah dimuat
         hasilprediksi = make_prediction(input_data)
-        # hasilprediksi = np.maximum(hasilprediksi, 0)  # Memastikan nilai prediksi tidak negatif
 
-         # Format hasil prediksi ke dua angka desimal
+        # Format hasil prediksi ke dua angka desimal
         hasilprediksi_formatted = "{:.2f}".format(hasilprediksi)
 
         # Memastikan nilai prediksi tidak negatif
@@ -122,11 +122,12 @@ def predict():
         db.session.add(prediksi_baru)
         db.session.commit()
 
- # Logika kondisi cuaca berdasarkan hasil prediksi
+        # Logika kondisi cuaca berdasarkan hasil prediksi
         kondisi_cuaca, icon = determine_weather_condition(float(hasilprediksi_formatted))
 
         # Return hasil prediksi dan kondisi cuaca
         return render_template('rainfallprediction.html', prediction=hasilprediksi_formatted, kondisi_cuaca=kondisi_cuaca, icon=icon)
+
 
 def determine_weather_condition(pred):
     if pred == 0:
